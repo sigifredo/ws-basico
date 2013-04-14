@@ -1,37 +1,49 @@
 
-set(GSOAP_DIR "${CMAKE_SOURCE_DIR}/include/soap")
+set(GSOAP_PATH /usr/share/gsoap/import/)
+set(SOAP_DIR "${CMAKE_SOURCE_DIR}/include/soap")
 
-add_custom_command(
-OUTPUT ${GSOAP_DIR}
-COMMAND mkdir
-ARGS -p ${GSOAP_DIR}
+if(GENERATE_GSOAP_FILES)
+        add_custom_command(
+                OUTPUT ${SOAP_DIR}
+                COMMAND mkdir
+                ARGS -p ${SOAP_DIR}
+        )
+
+        add_custom_command(
+                OUTPUT ${SOAP_DIR}/Cliente.hpp
+                DEPENDS ${SOAP_DIR}
+                COMMAND wsdl2h -o ${SOAP_DIR}/Cliente.hpp http://localhost:8080/servidor/servidor?WSDL
+        )
+
+        add_custom_command(
+                OUTPUT ${SOAP_DIR}/soapservidorPortBindingProxy.h
+                DEPENDS ${SOAP_DIR} ${SOAP_DIR}/Cliente.hpp
+                COMMAND soapcpp2 -I${GSOAP_PATH} -d${SOAP_DIR}/ ${SOAP_DIR}/Cliente.hpp
+        )
+
+        # add_custom_target(gsoap_headers ALL DEPENDS Cliente.hpp)
+        add_custom_target(gsoap_sources ALL DEPENDS ${SOAP_DIR}/soapservidorPortBindingProxy.h)
+endif()
+
+
+# file(GLOB SOAP_SRCS "${SOAP_DIR}/*.cpp")
+set(SOAP_SRCS
+${SOAP_DIR}/soapC.cpp
+${SOAP_DIR}/soapClient.cpp
 )
-
-add_custom_command(
-OUTPUT ${GSOAP_DIR}/Cliente.hpp
-DEPENDS ${GSOAP_DIR}
-COMMAND wsdl2h -o ${GSOAP_DIR}/Cliente.hpp http://localhost:8080/servidor/servidor?WSDL
-)
-
-add_custom_command(
-OUTPUT ${GSOAP_DIR}/soapservidorPortBindingProxy.h
-DEPENDS ${GSOAP_DIR} ${GSOAP_DIR}/Cliente.hpp
-COMMAND soapcpp2 -I/usr/share/gsoap/import/ -d${GSOAP_DIR}/ ${GSOAP_DIR}/Cliente.hpp
-)
-
-# add_custom_target(gsoap_headers ALL DEPENDS Cliente.hpp)
-add_custom_target(gsoap_sources ALL DEPENDS ${GSOAP_DIR}/soapservidorPortBindingProxy.h)
-
-FILE(GLOB SOAP_SRCS "${GSOAP_DIR}/*.cpp")
 
 add_library(lsoap SHARED
 ${SOAP_SRCS}
 )
 
-add_dependencies(lsoap gsoap_sources)
-
 set(GSOAP_LIBRARIES
 lsoap
+gsoap++
 )
 
-include_directories(${CMAKE_BINARY_DIR} /usr/share/gsoap/import/)
+include_directories(${GSOAP_PATH})
+
+
+if(GENERATE_GSOAP_FILES)
+        add_dependencies(lsoap gsoap_sources)
+endif()
