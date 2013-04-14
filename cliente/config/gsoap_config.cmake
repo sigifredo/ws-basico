@@ -26,6 +26,7 @@ if(GENERATE_GSOAP_FILES)
 endif()
 
 
+
 # file(GLOB SOAP_SRCS "${SOAP_DIR}/*.cpp")
 set(SOAP_SRCS
 ${SOAP_DIR}/soapC.cpp
@@ -42,6 +43,7 @@ gsoap++
 )
 
 include_directories(${GSOAP_PATH})
+
 
 
 if(GENERATE_GSOAP_FILES)

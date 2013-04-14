@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <soap/soapservidorPortBindingProxy.h>
+#include <soap/servidorPortBinding.nsmap>
 
 int main()
 {
