@@ -38,9 +38,12 @@ ${SOAP_SRCS}
 set(GSOAP_LIBRARIES
 lsoap
 gsoap++
+ssl
+crypto
 )
 
 include_directories(${GSOAP_PATH})
+add_definitions(-DWITH_OPENSSL)
 
 
 
