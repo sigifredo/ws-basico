@@ -21,13 +21,11 @@ if(GENERATE_GSOAP_FILES)
                 COMMAND soapcpp2 -I${GSOAP_PATH} -d${SOAP_DIR}/ ${SOAP_DIR}/Cliente.hpp
         )
 
-        # add_custom_target(gsoap_headers ALL DEPENDS Cliente.hpp)
         add_custom_target(gsoap_sources ALL DEPENDS ${SOAP_DIR}/soapservidorPortBindingProxy.h)
 endif()
 
 
 
-# file(GLOB SOAP_SRCS "${SOAP_DIR}/*.cpp")
 set(SOAP_SRCS
 ${SOAP_DIR}/soapC.cpp
 ${SOAP_DIR}/soapClient.cpp
