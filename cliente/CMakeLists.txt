@@ -1,8 +1,7 @@
 project( cliente )
 cmake_minimum_required(VERSION 2.8)
 
-find_package(GSOAP)
-
+include ("config/gsoap_config.cmake")
 # set(HDRS
 # include/Cliente.hpp
 # )
@@ -17,5 +16,7 @@ find_package(GSOAP)
 # )
 
 add_executable(cliente src/main.cpp)
+
+target_link_libraries(cliente ${GSOAP_LIBRARIES})
 
 # target_link_libraries(cliente conn)
